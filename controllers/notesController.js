@@ -11,7 +11,7 @@ const getAllNotes = asyncHandler(async (req, res) => {
 
   // If no notes
   if (!notes?.length) {
-    return res.status(400).json({ message: "No notes found" });
+    return res.status(404).json({ message: "No notes found" });
   }
 
   // Add username to each note before sending the response
@@ -44,12 +44,13 @@ const createNewNote = asyncHandler(async (req, res) => {
   if (duplicate) {
     return res.status(409).json({ message: "Duplicate note title" });
   }
+  //return res.json({ user, title, text });
 
-  // Create and store the new user
-  const note = await Note.create({ user, title, text });
-  if (!note) return res.status(400).json({ message: "Invalid data received!" });
+  const noteObject = { user, title, text };
 
-  return res.status(201).json(note);
+  // Create and store the new note
+  const note = await Note.create(noteObject);
+  return res.status(201).json({ message: `Note ${title} is created!` });
 });
 
 // @desc Update a note
